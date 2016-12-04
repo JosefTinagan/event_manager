@@ -54,7 +54,7 @@ contents = CSV.open "event_attendees.csv", headers: true, header_converters: :sy
 
 template_letter = File.read "form_letter.erb"
 erb_template = ERB.new template_letter
-
+arr_hours = []
 
 contents.each do |row|
 	#id = row[0]
@@ -63,15 +63,15 @@ contents.each do |row|
 	#legislators = legislators_by_zipcode(zipcode)
 	#phone_number = clean_phonenumber(row[:homephone])
 	hour = get_hour(row[:regdate])
-
+	arr_hours.push(hour)
 	#form_letter = erb_template.result(binding)
 
 	#save_thank_you_letters(id,form_letter)
 	#puts phone_number
-	puts hour.to_s
 end
 
-
+best_hour = arr_hours.max_by{|x| arr_hours.count(x) }
+puts "People register the most when its #{best_hour} o'clock"
 =begin
 #contents = File.read "event_attendees.csv"
 #puts contents
