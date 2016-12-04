@@ -48,6 +48,16 @@ def get_hour(date)
 	date_object.hour
 end
 
+def get_week(date)
+	date_object = DateTime.strptime(date,'%y/%d/%m %H:%M')
+	date_object.wday
+end
+
+def convert_to_day(num_to_convert)
+	array_of_days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+	array_of_days[num_to_convert]
+end
+
 puts "EventManager Initialized!"
 
 contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
@@ -55,23 +65,31 @@ contents = CSV.open "event_attendees.csv", headers: true, header_converters: :sy
 template_letter = File.read "form_letter.erb"
 erb_template = ERB.new template_letter
 arr_hours = []
+arr_wdays = []
 
 contents.each do |row|
-	#id = row[0]
-	#name = row[:first_name]
-	#zipcode = clean_zipcode(row[:zipcode])
-	#legislators = legislators_by_zipcode(zipcode)
-	#phone_number = clean_phonenumber(row[:homephone])
+	id = row[0]
+	name = row[:first_name]
+	zipcode = clean_zipcode(row[:zipcode])
+	legislators = legislators_by_zipcode(zipcode)
+	phone_number = clean_phonenumber(row[:homephone])
 	hour = get_hour(row[:regdate])
+	wday = get_week(row[:regdate])
 	arr_hours.push(hour)
-	#form_letter = erb_template.result(binding)
+	arr_wdays.push(wday)
+	form_letter = erb_template.result(binding)
 
-	#save_thank_you_letters(id,form_letter)
+	save_thank_you_letters(id,form_letter)
 	#puts phone_number
 end
 
 best_hour = arr_hours.max_by{|x| arr_hours.count(x) }
+best_day = arr_wdays.max_by{ |x| arr_wdays.count(x) }
+best_day = convert_to_day(best_day)
+
 puts "People register the most when its #{best_hour} o'clock"
+puts "People register the most when its #{best_day}"
+
 =begin
 #contents = File.read "event_attendees.csv"
 #puts contents
