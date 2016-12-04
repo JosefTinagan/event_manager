@@ -43,6 +43,11 @@ def clean_phonenumber(phone_number)
 	end
 end
 
+def get_hour(date)
+	date_object = DateTime.strptime(date,'%y/%d/%m %H:%M')
+	date_object.hour
+end
+
 puts "EventManager Initialized!"
 
 contents = CSV.open "event_attendees.csv", headers: true, header_converters: :symbol
@@ -50,17 +55,20 @@ contents = CSV.open "event_attendees.csv", headers: true, header_converters: :sy
 template_letter = File.read "form_letter.erb"
 erb_template = ERB.new template_letter
 
+
 contents.each do |row|
-	id = row[0]
-	name = row[:first_name]
-	zipcode = clean_zipcode(row[:zipcode])
-	legislators = legislators_by_zipcode(zipcode)
-	phone_number = clean_phonenumber(row[:homephone])
+	#id = row[0]
+	#name = row[:first_name]
+	#zipcode = clean_zipcode(row[:zipcode])
+	#legislators = legislators_by_zipcode(zipcode)
+	#phone_number = clean_phonenumber(row[:homephone])
+	hour = get_hour(row[:regdate])
 
-	form_letter = erb_template.result(binding)
+	#form_letter = erb_template.result(binding)
 
-	save_thank_you_letters(id,form_letter)
+	#save_thank_you_letters(id,form_letter)
 	#puts phone_number
+	puts hour.to_s
 end
 
 
